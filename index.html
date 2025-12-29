@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MED AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0;
+  background: #0d0f14;
+  color: #eaeaea;
+  font-family: Arial, sans-serif;
+}
+
+.app {
+  max-width: 900px;
+  margin: auto;
+  height: 100vh;
+  display: flex;
+}
+
+.sidebar {
+  width: 240px;
+  background: #11141b;
+  padding: 15px;
+}
+
+.sidebar h3 {
+  margin-top: 0;
+  color: #4dd0e1;
+}
+
+.sidebar div {
+  margin: 10px 0;
+  opacity: 0.8;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  padding: 14px;
+  border-bottom: 1px solid #222;
+  font-weight: bold;
+}
+
+.chat {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.msg {
+  margin-bottom: 16px;
+  max-width: 70%;
+  padding: 12px;
+  border-radius: 10px;
+}
+
+.user {
+  background: #4dd0e1;
+  color: #000;
+  margin-left: auto;
+}
+
+.ai {
+  background: #1c2230;
+}
+
+footer {
+  padding: 15px;
+  border-top: 1px solid #222;
+  display: flex;
+}
+
+input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background: #1c2230;
+  color: #fff;
+}
+
+button {
+  margin-left: 10px;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 8px;
+  background: #4dd0e1;
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+  <div class="sidebar">
+    <h3>MED AI</h3>
+    <div>New chat</div>
+    <div>Library</div>
+    <div>Projects</div>
+  </div>
+
+  <div class="main">
+    <header>MED AI • Built by MEDTECH</header>
+
+    <div class="chat" id="chat">
+      <div class="msg ai">
+        👋 Hello, I’m <b>MED AI</b><br>
+        An AI assistant built by MEDTECH.<br>
+        Ask me anything.
+      </div>
+    </div>
+
+    <footer>
+      <input id="input" placeholder="Message MED AI..." />
+      <button onclick="send()">Send</button>
+    </footer>
+  </div>
+
+</div>
+
+<script>
+async function send() {
+  const input = document.getElementById("input");
+  const chat = document.getElementById("chat");
+  const text = input.value.trim();
+  if (!text) return;
+
+  chat.innerHTML += `<div class="msg user">${text}</div>`;
+  input.value = "";
+
+  const res = await fetch("/ask", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: text })
+  });
+
+  const data = await res.json();
+  chat.innerHTML += `<div class="msg ai">${data.reply}</div>`;
+  chat.scrollTop = chat.scrollHeight;
+}
+</script>
+</body>
+</html>
